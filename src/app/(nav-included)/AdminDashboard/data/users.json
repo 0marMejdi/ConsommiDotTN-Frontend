@@ -1,0 +1,92 @@
+[
+  {
+    "id": "1",
+    "name": "Alicia Johnson",
+    "status": "merchant",
+    "email": "alicia.johnson@example.com",
+    "address": "123 Oak Street, Springfield, USA",
+    "phoneNumber": "(555) 123-4567",
+    "createdAt": "2023-07-15T09:30:00.000Z"
+  },
+  {
+    "id": "2",
+    "name": "Robert Smith",
+    "status": "consumer",
+    "email": "robert.smith@example.com",
+    "address": "456 Maple Avenue, Cityville, USA",
+    "phoneNumber": "(555) 987-6543",
+    "createdAt": "2022-11-20T14:45:00.000Z"
+  },
+  {
+    "id": "3",
+    "name": "Emily Brown",
+    "status": "merchant",
+    "email": "emily.brown@example.com",
+    "address": "789 Pine Road, Lakeside, USA",
+    "phoneNumber": "(555) 456-7890",
+    "createdAt": "2023-02-05T08:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "name": "Michael Wilson",
+    "status": "consumer",
+    "email": "michael.wilson@example.com",
+    "address": "321 Cedar Lane, Mountainview, USA",
+    "phoneNumber": "(555) 789-0123",
+    "createdAt": "2023-04-10T11:15:00.000Z"
+  },
+  {
+    "id": "5",
+    "name": "Jessica Martinez",
+    "status": "merchant",
+    "email": "jessica.martinez@example.com",
+    "address": "987 Elm Street, Rivertown, USA",
+    "phoneNumber": "(555) 234-5678",
+    "createdAt": "2023-01-02T16:20:00.000Z"
+  },
+  {
+    "id": "6",
+    "name": "David Thompson",
+    "status": "consumer",
+    "email": "david.thompson@example.com",
+    "address": "555 Walnut Avenue, Beachside, USA",
+    "phoneNumber": "(555) 345-6789",
+    "createdAt": "2023-05-25T13:00:00.000Z"
+  },
+  {
+    "id": "7",
+    "name": "Sarah Miller",
+    "status": "merchant",
+    "email": "sarah.miller@example.com",
+    "address": "222 Birch Drive, Sunnyside, USA",
+    "phoneNumber": "(555) 567-8901",
+    "createdAt": "2022-09-08T10:30:00.000Z"
+  },
+  {
+    "id": "8",
+    "name": "Daniel Garcia",
+    "status": "consumer",
+    "email": "daniel.garcia@example.com",
+    "address": "777 Oak Lane, Hillcrest, USA",
+    "phoneNumber": "(555) 678-9012",
+    "createdAt": "2022-12-18T15:45:00.000Z"
+  },
+  {
+    "id": "9",
+    "name": "Sophia Lopez",
+    "status": "merchant",
+    "email": "sophia.lopez@example.com",
+    "address": "444 Pine Street, Lakeshore, USA",
+    "phoneNumber": "(555) 789-0123",
+    "createdAt": "2022-10-30T12:00:00.000Z"
+  },
+  {
+    "id": "10",
+    "name": "Matthew Rodriguez",
+    "status": "consumer",
+    "email": "matthew.rodriguez@example.com",
+    "address": "666 Maple Drive, Riverside, USA",
+    "phoneNumber": "(555) 890-1234",
+    "createdAt": "2023-03-15T09:00:00.000Z"
+  }
+]
