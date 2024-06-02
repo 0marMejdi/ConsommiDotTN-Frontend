@@ -18,10 +18,10 @@ const Sidebar  = ({ onFilterSelect } : any) => {
         onFilterSelect({price : pricerange.join("-")})
       }}
       />
-      <div className="relative flex justify-between text-gray-700">
-         <p> ${pricerange[0]}
+      <div className="relative flex justify-between text-gray-700 pt-2">
+         <p className="text-gray-900 font-semibold"> ${pricerange[0]}
          </p>
-         <p>
+         <p className="text-gray-900 font-semibold">
           ${pricerange[1]} 
           </p>
         </div>
@@ -55,6 +55,26 @@ const Sidebar  = ({ onFilterSelect } : any) => {
             High to Low
           </Button>
         </div>
+        <CardHeader className="pt-2">
+        <CardTitle className="text-lg font-bold tracking-tight font-new-york mb-4">
+          Availability
+          </CardTitle>
+          <CardContent>
+            <div className="flex flex-col space-y-2">
+              <Button
+                variant="ghost"
+                className="shadow-md mb-2"
+                onClick={() => {
+                  onFilterSelect(
+                    {availability : "Available"}
+                  )
+                }}  
+              >
+                In Stock
+              </Button>
+              </div>
+          </CardContent>
+        </CardHeader>
       </CardContent>
       </Card>
   );

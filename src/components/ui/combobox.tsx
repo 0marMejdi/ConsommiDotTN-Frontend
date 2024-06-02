@@ -25,7 +25,7 @@ const frameworks = [
     label: "Cars",
   },
   {
-    value: "Informatique",
+    value: "tech",
     label: "Informatique",
   },
   {
@@ -42,10 +42,8 @@ const frameworks = [
   },
 ]
 
-export function ComboboxDemo() {
+export function ComboboxDemo({setValue , value} : any) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

@@ -1,25 +1,27 @@
 'use client'
 import PageLayout from "@/components/PageLayout";
-import { Search } from "@/components/SearchBar/Search";
-import React, { useEffect, useState } from "react";
-import { Separator } from "@radix-ui/react-dropdown-menu";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Tanstackdevtool from "@/app/Provider/tanstackdevtool";
-import queryClient from "@/app/Provider/Client";
-import dynamic from "next/dynamic";
-import ProductGrid from "../product-grid";
+import React from "react";
 import Sidebar from "../side";
+import ProductGrid from "../product-grid";
+import { parseAsString, useQueryStates } from "nuqs";
 
-const Home = () => {
+const Home = ({ params }: { params: { category: string } }) => {
+  const [filters, setFilters] = useQueryStates(
+    {
+      order : parseAsString.withDefault(""),
+      price : parseAsString.withDefault(""),
+      availability : parseAsString.withDefault("")
+    },
+    {
+      history: 'push'
+    }
+  );
+  const category = params.category
+  console.log(category)
   return (
     <PageLayout>
-      <Sidebar onFilterSelect={() => {}} />
-      <ProductGrid />
+      <Sidebar onFilterSelect={setFilters} />
+      <ProductGrid Category={category} Filters={filters}  />
     </PageLayout>
   );
 };

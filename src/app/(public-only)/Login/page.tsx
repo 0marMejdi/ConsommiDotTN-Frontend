@@ -4,9 +4,7 @@ import Login from './login'
 
 const page = () => {
   return (
-    <div>
     <Login initialEmail={""} initialPassword={""} />
-    </div>
   )
 }
 
