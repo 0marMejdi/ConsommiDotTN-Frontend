@@ -53,6 +53,8 @@ const Register = () => {
         city: City.ALL,
         street: '',
         postalCode: '',
+        demanding : false,
+        isApproved : false
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

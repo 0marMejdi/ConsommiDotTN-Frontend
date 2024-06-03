@@ -5,92 +5,114 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import Image from "next/image";
+import { useToast } from "@/components/ui/use-toast";
 
 interface RequestInterface {
-  name: string;
-  email: string;
-  phone: string;
-  status: string;
+  user: any;
   requeststatus: string;
+  updateRequestStatus: (userId: number, status: string) => void;
 }
 
 export default function RequestUI({
-  name,
-  email,
-  status,
-  phone,
+  user,
   requeststatus,
+  updateRequestStatus,
 }: RequestInterface) {
-  const isPending = requeststatus === "Pending";
-  const isAccepted = requeststatus === "Accepted";
-  const isRefused = requeststatus === "Refused";
+  console.log(user, requeststatus);
+  const isPending = requeststatus === "pending";
+  const isAccepted = requeststatus === "approved";
+  const isRefused = requeststatus === "rejected";
+  const {toast} = useToast()
 
   const renderStatusBadge = () => {
     switch (requeststatus) {
-      case "Pending":
+      case "pending":
         return <Badge variant="outline">Pending</Badge>;
-      case "Accepted":
+      case "approved":
         return <Badge variant="outline">Accepted</Badge>;
-      case "Refused":
+      case "rejected":
         return <Badge variant="outline">Refused</Badge>;
       default:
         return null;
     }
   };
 
+  const onRevoke = () => {
+    fetch("http://localhost:3000/demand/revoke/" + user.id, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      toast({
+        variant: "default",
+        title: "Request Denied",
+        description: "The request has been denied"
+      });
+      updateRequestStatus(user.id, "rejected");
+    });
+  };
+
+  const onGrant = () => {
+    fetch("http://localhost:3000/demand/grant/" + user.id, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      toast({
+        variant: "default",
+        title: "Request Granted",
+        description: "The request has been granted"
+      });
+      updateRequestStatus(user.id, "approved");
+    });
+  };
+
   const renderActionButton = () => {
-    if (isAccepted) {
-      return <Button variant="destructive" className="rounded-md">Revoke</Button>;
-    } else if (isRefused) {
-      return <Button variant="creative" className="rounded-md">Grant</Button>;
-    } else {
-      return (
-        <>
-          <Button
-            variant="creative"
-            className="rounded-md"
-            disabled={isAccepted || isRefused}
-          >
-            Accept
-          </Button>
-          <Button
-            variant="destructive"
-            className="rounded-md"
-            disabled={isAccepted || isRefused}
-          >
-            Refuse
-          </Button>
-        </>
-      );
-    }
+    return (
+      <>
+        <Button
+          variant="destructive"
+          className="rounded-md"
+          onClick={onRevoke}
+          disabled={isRefused}
+        >
+          Revoke
+        </Button>
+        <Button
+          variant="creative"
+          className="rounded-md"
+          onClick={onGrant}
+          disabled={isAccepted}
+        >
+          Grant
+        </Button>
+      </>
+    );
   };
 
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
-        <Image
-          alt="Product image"
-          className="aspect-square rounded-md object-cover"
-          height={64}
-          src="/giorno.jpg"
-          width={64}
-        />
+        {/* Add content here if needed */}
       </TableCell>
-      <TableCell className="font-medium">{name}</TableCell>
+      <TableCell className="font-medium">{user.name + " " + user.lastName}</TableCell>
       <TableCell>
-        <Badge variant="outline">{status}</Badge>
+        <Badge variant="outline">{user.role}</Badge>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{email}</TableCell>
-      <TableCell className="hidden md:table-cell">{phone}</TableCell>
+      <TableCell className="hidden md:table-cell">{user.email}</TableCell>
+      <TableCell className="hidden md:table-cell">{user.phone}</TableCell>
       <TableCell>{renderStatusBadge()}</TableCell>
       <TableCell className="hidden md:table-cell">
-      <Button variant="link">View Profile</Button>
       </TableCell>
       <TableCell style={{ position: "relative" }} className="text-start">
         <div className="inline-flex justify-center items-center gap-4">
           {renderActionButton()}
-          
         </div>
       </TableCell>
     </TableRow>

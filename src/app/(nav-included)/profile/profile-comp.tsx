@@ -3,12 +3,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 const ProfileComp = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [updatedUser, setUpdatedUser] = useState<any>(null);
-  const [updatedPassword,setUpdatedPassword] = useState<any>(null)
+  const [updatedPassword, setUpdatedPassword] = useState<any>(null);
+  const [requested, setRequested] = useState<string>("");
+  const { toast } = useToast();
 
   useEffect(() => {
     fetch("http://localhost:3000/users/infos", {
@@ -19,6 +22,7 @@ const ProfileComp = () => {
       .then((response) => response.json())
       .then((data) => {
         setUser(data);
+        setRequested(data.demanding);
         setLoading(false);
       })
       .catch((error) => {
@@ -33,14 +37,16 @@ const ProfileComp = () => {
   if (!user) {
     return <p>No user data found.</p>;
   }
+
   const profile = {
     name: user.name,
-    lastName : user.lastName,
+    lastName: user.lastName,
     role: user.role,
     email: user.email,
     phone: user.phone,
     address: user.street + " " + user.city,
   };
+
   const Onchangehandler = (event: any) => {
     setUpdatedUser((prev: any) => ({
       ...prev,
@@ -48,15 +54,16 @@ const ProfileComp = () => {
     }));
     console.log(updatedUser);
   };
+
   const handleSubmit = (event: any) => {
     event.preventDefault();
     console.log(updatedUser);
     const token = localStorage.getItem("token");
     if (updatedUser) {
       fetch("http://localhost:3000/users/infos", {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedUser),
@@ -65,34 +72,70 @@ const ProfileComp = () => {
         .then((data) => console.log(data))
         .catch((error) => console.error(error));
     }
-    if (updatedPassword)
-      {
-        if (updatedPassword.newPassword== updatedPassword.confirmpassword)
-          {
-            const body ={
-              password : updatedPassword.password,
-              newPassword : updatedPassword.newPassword
-            }
-            fetch("http://localhost:3000/users/infos/password", {
-              method : 'PATCH',
-              headers : {
-                'Content-Type' : 'application/json',
-                Authorization : `Bearer ${token}`
-              },
-              body : JSON.stringify(body)
-            })
-              .then((response) => response.json())
-              .then((data) => console.log(data))
-          }
+    if (updatedPassword) {
+      if (updatedPassword.newPassword == updatedPassword.confirmpassword) {
+        const body = {
+          password: updatedPassword.password,
+          newPassword: updatedPassword.newPassword,
+        };
+        fetch("http://localhost:3000/users/infos/password", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(body),
+        })
+          .then((response) => response.json())
+          .then((data) => console.log(data));
       }
-  };  
-  const onPasswordHandler =(event : any) => {
-    setUpdatedPassword((prev : any) => ({
+    }
+  };
+
+  const onPasswordHandler = (event: any) => {
+    setUpdatedPassword((prev: any) => ({
       ...prev,
-      [event.target.id] : event.target.value
-    }))
-    console.log(updatedPassword)
-  }
+      [event.target.id]: event.target.value,
+    }));
+    console.log(updatedPassword);
+  };
+
+  const handleApply = () => {
+    fetch("http://localhost:3000/demand/request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        toast({
+          variant: "default",
+          title: "Request Sent",
+          description: data.message,
+        });
+      });
+  };
+
+  const handleCancel = () => {
+    fetch("http://localhost:3000/demand/cancel", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        toast({
+          variant: "destructive",
+          title: "Request Canceled",
+          description: data.message,
+        });
+      });
+  };
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-md border border-gray-200">
       {/* Profile header */}
@@ -215,8 +258,13 @@ const ProfileComp = () => {
             </div>
           </div>
         </div>
-        {/* Save Button */}
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-4">
+          <Button size="lg" disabled={user.demanding == "true"} onClick={handleApply}>
+            Apply for Merchant
+          </Button>
+          <Button size="lg" disabled={user.demanding == "false"} onClick={handleCancel}>
+            Cancel Demand
+          </Button>
           <Button size="lg" onClick={handleSubmit}>
             Save
           </Button>

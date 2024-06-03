@@ -14,14 +14,14 @@ import {
 } from "@/components/ui/card";
 import { useToast } from '@/components/ui/use-toast';
 
-const Login = ({ initialEmail, initialPassword }: any) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const { toast } = useToast();
-  const token = localStorage.getItem("token");
   useEffect(()=>{
+    const token = localStorage.getItem("token");
     fetch("http://localhost:3000/users/infos",
       {
         headers :{
