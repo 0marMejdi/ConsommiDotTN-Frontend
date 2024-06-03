@@ -14,6 +14,11 @@ import { DropdownMenuPortal } from "@radix-ui/react-dropdown-menu";
 import { profile } from "console";
 
 export function UserNav() {
+  const LogOut = () =>{
+    const token = localStorage.getItem("token")
+    localStorage.removeItem("token")
+    window.location.href = "/Login"
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -49,7 +54,7 @@ export function UserNav() {
           </a>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={LogOut}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>

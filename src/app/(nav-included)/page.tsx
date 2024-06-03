@@ -1,13 +1,11 @@
-import dynamic from "next/dynamic";
-import Image from "next/image";
+import React from 'react'
 
-export default function Home() {
-  const DynamicStreamClient = dynamic(() => import('./Home/StreamClient'), {
-    ssr: false,
-  })
+const page = () => {
   return (
     <>
-    <DynamicStreamClient></DynamicStreamClient>
     </>
-  );
+
+  )
 }
+
+export default page

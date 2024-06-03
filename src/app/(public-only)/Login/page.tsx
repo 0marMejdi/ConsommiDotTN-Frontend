@@ -2,10 +2,12 @@
 import React from 'react'
 import Login from './login'
 
-const page = () => {
+const Page = () => {
   return (
+    
     <Login initialEmail={""} initialPassword={""} />
+    
   )
 }
 
-export default page
+export default Page

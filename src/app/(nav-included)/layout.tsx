@@ -1,6 +1,8 @@
 import NavBar from "@/components/Navbar";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Checkauthentification from "./checkauthentification";
+import { Suspense, useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,11 +17,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <NavBar/>
+    <Suspense>
+      <Checkauthentification >
+        <NavBar />
         <span className="mb-100"></span>
-        {children}</body>
-    </html>
+        {children}
+      </Checkauthentification>
+    </Suspense>
   );
 }

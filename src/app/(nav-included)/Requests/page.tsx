@@ -1,7 +1,3 @@
-import Image from "next/image"
-import { MoreHorizontal } from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -12,13 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
   Table,
   TableBody,
   TableCell,
@@ -26,17 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import PageLayout from "@/components/PageLayout"
 import { Input } from "@/components/ui/input"
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
 import SelectUI from "../AdminDashboard/selection"
 import RequestUI from "./requestUI"
 export default function AdminDashboard() {

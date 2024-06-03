@@ -1,9 +1,10 @@
+"use client"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -11,13 +12,31 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useToast } from '@/components/ui/use-toast';
 
 const Login = ({ initialEmail, initialPassword }: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
-
+  const { toast } = useToast();
+  const token = localStorage.getItem("token");
+  useEffect(()=>{
+    fetch("http://localhost:3000/users/infos",
+      {
+        headers :{
+          Authorization : `Bearer ${token}`
+        }
+      }
+    )
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.email)
+        {
+          window.location.href="/Home"
+        }
+    })
+  })
   const SubmitHandler = async () => {
     console.log(email, password);
     try {
@@ -28,9 +47,8 @@ const Login = ({ initialEmail, initialPassword }: any) => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+      const data = await response.json();
       if (response.ok) {
-        const data = await response.json();
         console.log(data);
         const token = data.Authorization; 
         localStorage.setItem('token', token);
@@ -41,9 +59,11 @@ const Login = ({ initialEmail, initialPassword }: any) => {
           window.location.href = '/Home';
         }, 2000);
       } else {
-        console.error('Failed to login:', response.statusText);
-        setError("Invalid email or password");
-        setSuccess("");
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: data.message,
+        })
       }
     } catch (error: any) {
       console.error('Failed to login:', error.message);
@@ -73,7 +93,6 @@ const Login = ({ initialEmail, initialPassword }: any) => {
                   type="email"
                   placeholder="m@example.com"
                   required
-                  defaultValue={initialEmail}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -87,7 +106,6 @@ const Login = ({ initialEmail, initialPassword }: any) => {
                   type="password"
                   required
                   value={password}
-                  defaultValue={initialPassword}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>

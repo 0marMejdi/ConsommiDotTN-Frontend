@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Tanstackdevtool from "./Provider/tanstackdevtool";
 import queryClient from "./Provider/Client";
+import { Toaster } from "@/components/ui/toaster";
+import Checkauthentification from "./(nav-included)/checkauthentification";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,9 +26,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <span className="mb-100"></span>
         <TooltipProvider>
-        <Tanstackdevtool/>
             {children}
         </TooltipProvider>
+        <Toaster/>
       </body>
     </html>
   );

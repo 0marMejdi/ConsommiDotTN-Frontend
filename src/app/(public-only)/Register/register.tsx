@@ -1,17 +1,108 @@
+"use client"
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-  } from "@/components/ui/card"
+} from "@/components/ui/card"
+import { useToast } from '@/components/ui/use-toast'
+
+export enum City {
+    ALL = "all",
+    ARIANA = "ariana",
+    BEJA = "beja",
+    BEN_AROUS = "ben arous",
+    BIZERTE = "bizerte",
+    GABES = "gabes",
+    GAFSA = "gafsa",
+    JENDOUBA = "jendouba",
+    KAIROUAN = "kairouan",
+    KASSERINE = "kasserine",
+    KEBILI = "kebili",
+    KEF = "kef",
+    MAHDIA = "mahdia",
+    MANOUBA = "manouba",
+    MEDENINE = "medenine",
+    MONASTIR = "monastir",
+    NABEUL = "nabeul",
+    SFAX = "sfax",
+    SIDI_BOUZID = "sidi bouzid",
+    SILIANA = "siliana",
+    SOUSSE = "sousse",
+    TATAOUINE = "tataouine",
+    TOZEUR = "tozeur",
+    TUNIS = "tunis",
+    ZAGHOUAN = "zaghouan",
+}
+
 const Register = () => {
+    const [formData, setFormData] = useState({
+        email: '',
+        name: '',
+        lastName: '',
+        password: '',
+        phone: '',
+        city: City.ALL,
+        street: '',
+        postalCode: '',
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { id, value } = e.target
+        setFormData({ ...formData, [id]: value })
+    }
+
+    const handleCityChange = (value: City) => {
+        setFormData({ ...formData, city: value })
+    }
+    const {toast} = useToast()
+    const handleSubmit = (event: any) => {
+
+        event.preventDefault();
+        console.log(formData);
+        if (formData) {
+        fetch("http://localhost:3000/auth/register", {
+          method : 'POST',
+          body : JSON.stringify({...formData}),
+          headers :
+          {
+            'Content-Type' : 'application/json'
+          }
+        }
+      )
+        .then((response)=> response.json())
+        .then((data) => {
+            {
+                if (data.Authorization)
+                    {   
+                        //save token to localstorage
+                        localStorage.setItem('token', data.Authorization)
+                        window.location.href="/Home"
+                    }
+                    else 
+                    {
+                        toast(
+                            {
+                                variant : "destructive",
+                                title : "Error",
+                                description : data.message,
+                            }
+                        )
+                    }
+            }
+        })
+        
+      };
+    }
+
     return (
         <div className="w-full lg:grid lg:grid-cols-2 xl:min-h-[800px]">
             <div className="relative">
@@ -25,43 +116,109 @@ const Register = () => {
                     />
                 </div>
             </div>
-            <div className="flex items-center justify-center py-12">
-                <Card className="mx-auto max-w-sm">
+            <div className="flex items-center justify-center">
+                <Card className="mx-auto max-w-sm p-7">
                     <CardHeader>
                         <CardTitle className="text-xl">Sign Up</CardTitle>
-                        <CardDescription>
+                        <CardDescription className='p-2'>
                             Enter your information to create an account
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid gap-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="first-name">First name</Label>
-                                    <Input id="first-name" placeholder="Max" required />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="last-name">Last name</Label>
-                                    <Input id="last-name" placeholder="Robinson" required />
-                                </div>
+                        <form className="grid gap-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="name">First name</Label>
+                                <Input
+                                    id="name"
+                                    placeholder="Johnyyy"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="lastName">Last name</Label>
+                                <Input
+                                    id="lastName"
+                                    placeholder="Doe"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                    required
+                                />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="m@example.com"
+                                    placeholder="john.doe@example.com"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="phone">Phone Number</Label>
+                                <Input
+                                    id="phone"
+                                    placeholder="12343290"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="city">City</Label>
+                                    <Select onValueChange={handleCityChange} defaultValue={formData.city}>
+                                        <SelectTrigger id="city">
+                                            <SelectValue placeholder="Select a city" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {Object.values(City).map((city) => (
+                                                <SelectItem key={city} value={city}>
+                                                    {city.charAt(0).toUpperCase() + city.slice(1)}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="postalCode">Postal Code</Label>
+                                    <Input
+                                        id="postalCode"
+                                        placeholder="12345"
+                                        value={formData.postalCode}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="street">Address</Label>
+                                <Input
+                                    id="street"
+                                    placeholder="742 Evergreen Terrace"
+                                    value={formData.street}
+                                    onChange={handleChange}
                                     required
                                 />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input id="password" type="password" />
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    placeholder='****'
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                />
                             </div>
-                            <Button type="submit" className="w-full">
+                            <Button type="submit" className="w-full" onClick={handleSubmit}>
                                 Create an account
                             </Button>
-                        </div>
+                        </form>
                         <div className="mt-4 text-center text-sm">
                             Already have an account?{" "}
                             <Link href="/Login" className="underline">
@@ -71,8 +228,8 @@ const Register = () => {
                     </CardContent>
                 </Card>
             </div>
-        </div> 
+        </div>
     )
 }
 
-export default Register;
+export default Register

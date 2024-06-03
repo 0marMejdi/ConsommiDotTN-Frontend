@@ -23,15 +23,18 @@ export default function ProductList({selectedProduct,onSelectProduct }: ProductL
         }
     )
     .then((response) => response.json())
-    .then((data) => setProducts(data))
+    .then((data) =>  {setProducts(data)
+    })
     .catch((error) => console.error(error));
     },[])
   return (
     <div className="space-y-4">
-      {products.map((product) => (
+      {products && products.map((product) => {
+        console.log(product)
+        return (
           <Contact
             avatarFallback=""
-            avatarSrc=""
+            avatarSrc={product.product.image}
             conversationId={product.conversationId}
             name={product.product.name}
             email=""
@@ -39,7 +42,7 @@ export default function ProductList({selectedProduct,onSelectProduct }: ProductL
             onClick={() =>handleProductClick(product)}
             key={Math.random()}
             />
-      ))}
+      )})}
     </div>
   );
 }

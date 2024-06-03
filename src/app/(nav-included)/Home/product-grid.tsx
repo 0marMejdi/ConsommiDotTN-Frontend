@@ -8,10 +8,9 @@ const ProductGrid = ({ Filters, Category }: any) => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const PageSize = 5;
-
+  const PageSize = 12;
+  
   useEffect(() => {
-    // First fetch to set the total pages size
     setLoading(true);
     let url = Category ? `http://localhost:3000/product/filter?category=${Category}` : `http://localhost:3000/product/filter`;
 
@@ -49,7 +48,20 @@ const ProductGrid = ({ Filters, Category }: any) => {
         setLoading(false);
       });
   }, [currentPage, Category]);
-
+  const handlePicture = (id : string)=>{
+    console.log(id)
+    fetch("http://localhost:3000/"+id)
+    .then(res => res.blob())
+    .then(blob => {
+      //save this image and return it's url
+      const imageUrl = URL.createObjectURL(blob);
+      return imageUrl;
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    return "";
+  }
   useEffect(() => {
     if (allProducts.length > 0) {
       let updatedProducts = [...allProducts];
@@ -83,7 +95,7 @@ const ProductGrid = ({ Filters, Category }: any) => {
               <div key={product.id} className="bg-white shadow-md rounded-lg p-10">
                 <a href={`/Product/${product.id}`}>
                   <img
-                    src={product.imageUrl}
+                    src={"http://localhost:3000/"+product.images["0"]}
                     alt={product.name}
                     className="w-full h-48 object-cover mb-4 rounded-lg"
                   />
@@ -106,7 +118,7 @@ const ProductGrid = ({ Filters, Category }: any) => {
             ))}
         </div>
       </div>
-      <div className="bottom-0 left-0 w-full bg-white shadow-md pt-8 pb-6">
+      <div className="bottom-0 left-0 w-full pt-8 pb-6">
         <PaginationComponent
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}

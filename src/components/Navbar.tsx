@@ -18,13 +18,10 @@ export default function NavBar() {
         <ShoppingBagIcon className="w-5 h-5" />
         <span>Consommi</span>
       </Link>
-        <Link className="text-gray-500 dark:text-gray-400" href="/">
+        <Link className="text-gray-500 dark:text-gray-400" href="/Home">
           Home
         </Link>
-        <Link className="text-gray-500 dark:text-gray-400" href="/Dashbord">
-          Dashboard
-        </Link>
-        <Link className="text-gray-500 dark:text-gray-400" href="/Profile">
+        <Link className="text-gray-500 dark:text-gray-400" href="/profile">
           Profile
         </Link>
         </div>  

@@ -1,19 +1,98 @@
+"use client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const ProfileComp: React.FC = () => {
-  // Example values for the user profile
+const ProfileComp = () => {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [updatedUser, setUpdatedUser] = useState<any>(null);
+  const [updatedPassword,setUpdatedPassword] = useState<any>(null)
+
+  useEffect(() => {
+    fetch("http://localhost:3000/users/infos", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!user) {
+    return <p>No user data found.</p>;
+  }
   const profile = {
-    name: "Catherine Grant",
-    role: "Product Designer",
-    email: "catherine@example.com",
-    phone: "+1 123 456 7890",
-    address: "123 Main St, City, Country",
-    createdAt: "2022-04-28", // Assuming this is a string representing the creation date
+    name: user.name,
+    lastName : user.lastName,
+    role: user.role,
+    email: user.email,
+    phone: user.phone,
+    address: user.street + " " + user.city,
   };
-
+  const Onchangehandler = (event: any) => {
+    setUpdatedUser((prev: any) => ({
+      ...prev,
+      [event.target.id]: event.target.value,
+    }));
+    console.log(updatedUser);
+  };
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    console.log(updatedUser);
+    const token = localStorage.getItem("token");
+    if (updatedUser) {
+      fetch("http://localhost:3000/users/infos", {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedUser),
+      })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
+    }
+    if (updatedPassword)
+      {
+        if (updatedPassword.newPassword== updatedPassword.confirmpassword)
+          {
+            const body ={
+              password : updatedPassword.password,
+              newPassword : updatedPassword.newPassword
+            }
+            fetch("http://localhost:3000/users/infos/password", {
+              method : 'PATCH',
+              headers : {
+                'Content-Type' : 'application/json',
+                Authorization : `Bearer ${token}`
+              },
+              body : JSON.stringify(body)
+            })
+              .then((response) => response.json())
+              .then((data) => console.log(data))
+          }
+      }
+  };  
+  const onPasswordHandler =(event : any) => {
+    setUpdatedPassword((prev : any) => ({
+      ...prev,
+      [event.target.id] : event.target.value
+    }))
+    console.log(updatedPassword)
+  }
   return (
     <div className="p-6 bg-white rounded-lg shadow-md border border-gray-200">
       {/* Profile header */}
@@ -22,7 +101,7 @@ const ProfileComp: React.FC = () => {
           alt="Avatar"
           className="border rounded-full"
           height="96"
-          src="/giorno.jpg"
+          src="boy.png"
           style={{
             aspectRatio: "1",
             objectFit: "cover",
@@ -49,6 +128,17 @@ const ProfileComp: React.FC = () => {
                 defaultValue={profile.name}
                 placeholder="Enter your name"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
+                onChange={Onchangehandler}
+              />
+            </div>
+            <div>
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                defaultValue={profile.lastName}
+                placeholder="Enter your last name"
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+                onChange={Onchangehandler}
               />
             </div>
             {/* Email */}
@@ -60,6 +150,7 @@ const ProfileComp: React.FC = () => {
                 placeholder="Enter your email"
                 type="email"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
+                disabled
               />
             </div>
             {/* Phone */}
@@ -71,16 +162,18 @@ const ProfileComp: React.FC = () => {
                 placeholder="Enter your phone"
                 type="tel"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
+                onChange={Onchangehandler}
               />
             </div>
             {/* Address */}
             <div>
               <Label htmlFor="address">Address</Label>
               <Input
-                id="address"
+                id="street"
                 defaultValue={profile.address}
                 placeholder="Enter your address"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
+                onChange={Onchangehandler}
               />
             </div>
           </div>
@@ -91,53 +184,45 @@ const ProfileComp: React.FC = () => {
           <h2 className="text-lg font-semibold">Change Password</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div>
-              <Label htmlFor="current-password">Current Password</Label>
+              <Label htmlFor="password">Current Password</Label>
               <Input
-                id="current-password"
+                id="password"
                 placeholder="Enter your current password"
                 type="password"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
+                onChange={onPasswordHandler}
               />
             </div>
             <div>
-              <Label htmlFor="new-password">New Password</Label>
+              <Label htmlFor="newPassword">New Password</Label>
               <Input
-                id="new-password"
+                id="newPassword"
                 placeholder="Enter your new password"
                 type="password"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
+                onChange={onPasswordHandler}
               />
             </div>
             <div>
-              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Label htmlFor="confirmpassword">Confirm Password</Label>
               <Input
-                id="confirm-password"
+                id="confirmpassword"
                 placeholder="Confirm your new password"
                 type="password"
                 className="w-full px-3 py-2 border border-gray-300 rounded"
+                onChange={onPasswordHandler}
               />
             </div>
           </div>
         </div>
-
-        {/* Created At (uneditable) */}
-        <div className="border-t pt-4">
-          <Label htmlFor="created-at">Created At</Label>
-          <Input
-            id="created-at"
-            value={profile.createdAt}
-            readOnly // Make the input uneditable
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          />
-        </div>
-
         {/* Save Button */}
         <div className="flex justify-end">
-          <Button size="lg">Save</Button>
+          <Button size="lg" onClick={handleSubmit}>
+            Save
+          </Button>
         </div>
       </div>
     </div>
   );
 };
-
 export default ProfileComp;
