@@ -68,9 +68,15 @@ const ProfileComp = () => {
         },
         body: JSON.stringify(updatedUser),
       })
-        .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((error) => console.error(error));
+        .then((response) => {
+          if (response.ok) {
+            toast({
+              variant: "default",
+              title: "User Updated",
+              description: "Your user has been updated successfully.",
+            });
+          }
+        })
     }
     if (updatedPassword) {
       if (updatedPassword.newPassword == updatedPassword.confirmpassword) {
